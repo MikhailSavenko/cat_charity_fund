@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
 
 class DonationBase(BaseModel):
     comment: Optional[str]
-    full_amount: int
+    full_amount: int = Field(gt=0)
     
 
 class DonationCreate(DonationBase):
@@ -16,9 +16,15 @@ class DonationCurrentUserDB(DonationBase):
     id: int
     create_date: datetime
 
+    class Config:
+        orm_mode = True
+
 
 class DonationSuperUserDB(DonationCurrentUserDB):
     user_id: int
     close_date: datetime = None
     fully_invested: bool
     invested_amount: int
+
+    class Config:
+        orm_mode = True
