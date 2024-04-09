@@ -1,8 +1,8 @@
-"""models
+"""models+больше нуля сумма+False investe
 
-Revision ID: 036d9327bf8a
+Revision ID: 24410068b255
 Revises: 
-Create Date: 2024-04-08 20:52:20.513688
+Create Date: 2024-04-09 14:54:07.542215
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '036d9327bf8a'
+revision = '24410068b255'
 down_revision = None
 branch_labels = None
 depends_on = None
