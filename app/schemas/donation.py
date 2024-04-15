@@ -6,7 +6,7 @@ from typing import Optional
 class DonationBase(BaseModel):
     comment: Optional[str]
     full_amount: int = Field(gt=0)
-    
+
 
 class DonationCreate(DonationBase):
     pass

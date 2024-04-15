@@ -8,7 +8,9 @@ from sqlalchemy import select
 class CRUDDonation(CRUDBase):
 
     async def get_by_user(self, user: User, session: AsyncSession):
-        donations_user = await session.execute(select(Donation).where(Donation.user_id == user.id))
+        donations_user = await session.execute(
+            select(Donation).where(Donation.user_id == user.id)
+        )
         donations_user = donations_user.scalars().all()
         return donations_user
 
