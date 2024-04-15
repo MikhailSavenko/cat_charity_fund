@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
-from app.api.validators import check_name_duplicate, chek_project_befor_edit
+from app.api.validators import check_name_duplicate, chek_project_befor_edit, check_change_full_amount, chek_project_invested_amount
 from app.core.db import get_async_session, AsyncSession
-from app.crud.charityproject import project_crud
-from app.schemas.charityproject import ProjectDB, ProjectCreate, ProjectUpdate
+from app.crud.charity_project import project_crud
+from app.schemas.charity_project import ProjectDB, ProjectCreate, ProjectUpdate
 from app.core.user import current_superuser
 from app.services.investing import investing_money
 
@@ -23,6 +23,7 @@ async def create_new_project(project: ProjectCreate, session: AsyncSession = Dep
 @router.delete('/{project_id}', response_model=ProjectDB, dependencies=[Depends(current_superuser)])
 async def delete_project(project_id: int, session: AsyncSession = Depends(get_async_session)):
     project = await chek_project_befor_edit(project_id, session)
+    await chek_project_invested_amount(project, session)
     project_del = await project_crud.remove(db_obj=project, session=session)
     return project_del
 
@@ -30,5 +31,9 @@ async def delete_project(project_id: int, session: AsyncSession = Depends(get_as
 @router.patch('/{project_id}', response_model=ProjectDB, dependencies=[Depends(current_superuser)])
 async def update_project(project_id: int, obj_in: ProjectUpdate, session: AsyncSession = Depends(get_async_session)):
     project_obj_db = await chek_project_befor_edit(project_id, session)
+    await check_name_duplicate(obj_in.name, session)
+    full_amount_update = obj_in.full_amount
+    if full_amount_update is not None:
+        await check_change_full_amount(project_id, obj_in.full_amount, session)
     project_update = await project_crud.update(db_obj=project_obj_db, obj_in=obj_in, session=session)
     return project_update

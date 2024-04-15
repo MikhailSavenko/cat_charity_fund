@@ -1,8 +1,9 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.encoders import jsonable_encoder
 from app.models import User
 from typing import Optional
+from datetime import datetime
 
 
 class CRUDBase:
@@ -49,6 +50,12 @@ class CRUDBase:
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
+        if db_obj.full_amount == db_obj.invested_amount:
+            db_obj.fully_invested = True
+            db_obj.close_date = datetime.now()
+        else:
+            db_obj.fully_invested = False
+            db_obj.close_date = None
         session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)

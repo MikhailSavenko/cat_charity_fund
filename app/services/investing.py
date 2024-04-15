@@ -1,12 +1,13 @@
 from app.models import Donation, CharityProject
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, desc
 from app.core.db import AsyncSession
+from datetime import datetime
 
 
 def change_value_attr(obj_in, investing_sum):
     obj_in.invested_amount += investing_sum
     obj_in.fully_invested = True
-    obj_in.close_date = func.now()
+    obj_in.close_date = datetime.now()
     return obj_in
 
 
@@ -34,7 +35,7 @@ async def investing_donat(obj_donat: Donation, session: AsyncSession):
             if obj_donat.invested_amount == full_amount_donat:
                 # донат проинвестирован
                 obj_donat.fully_invested = True
-                obj_donat.close_date = func.now()
+                obj_donat.close_date = datetime.now()
             else:
                 # проект
                 change_value_attr(project, required_donation)
@@ -79,7 +80,7 @@ async def investing_money(obj_project: CharityProject, session: AsyncSession):
             # проверяем о необходимости закрытия сборов проекта
             if obj_project.invested_amount == full_amount_project:
                 obj_project.fully_invested = True
-                obj_project.close_date = func.now()
+                obj_project.close_date = datetime.now()
                 # для объекта доната
                 change_value_attr(donat, donat_free)
                 # для увеличения счетчика выхода из цикла
