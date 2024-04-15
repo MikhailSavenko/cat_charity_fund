@@ -15,7 +15,7 @@ async def investing_donat(obj_donat: Donation, session: AsyncSession):
     full_amount_donat = obj_donat.full_amount
     all_open_projects = await session.execute(
         select(CharityProject)
-        .where(CharityProject.fully_invested == False)
+        .where(CharityProject.fully_invested == 0)
         .order_by(desc(CharityProject.create_date))
     )
     all_open_projects = all_open_projects.scalars().all()
@@ -65,7 +65,7 @@ async def investing_donat(obj_donat: Donation, session: AsyncSession):
 async def investing_money(obj_project: CharityProject, session: AsyncSession):
     full_amount_project = obj_project.full_amount
     all_donation_free = await session.execute(
-        select(Donation).where(Donation.fully_invested == False)
+        select(Donation).where(Donation.fully_invested == 0)
     )
     all_donation_free = all_donation_free.scalars().all()
     if not all_donation_free:
