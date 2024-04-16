@@ -1,7 +1,9 @@
-from .base import CRUDBase
-from app.models import CharityProject
-from app.core.db import AsyncSession
 from sqlalchemy import select
+
+from app.core.db import AsyncSession
+from app.models import CharityProject
+
+from .base import CRUDBase
 
 
 class CRUDProject(CRUDBase):
@@ -26,9 +28,7 @@ class CRUDProject(CRUDBase):
             )
         )
         obj_invested_amount = obj_invested_amount.scalars().first()
-        if new_full_amount < obj_invested_amount:
-            return False
-        return True
+        return new_full_amount >= obj_invested_amount
 
 
 project_crud = CRUDProject(CharityProject)

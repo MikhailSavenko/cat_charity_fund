@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Depends
-from app.api.validators import (
-    check_name_duplicate,
-    chek_project_befor_edit,
-    check_change_full_amount,
-    chek_project_invested_amount,
-)
-from app.core.db import get_async_session, AsyncSession
-from app.crud.charity_project import project_crud
-from app.schemas.charity_project import ProjectDB, ProjectCreate, ProjectUpdate
+
+from app.api.validators import (check_change_full_amount, check_name_duplicate,
+                                chek_project_invested_amount,
+                                get_project_or_404)
+from app.core.db import AsyncSession, get_async_session
 from app.core.user import current_superuser
+from app.crud.charity_project import project_crud
+from app.schemas.charity_project import ProjectCreate, ProjectDB, ProjectUpdate
 from app.services.investing import investing_money
 
 router = APIRouter()
@@ -16,8 +14,7 @@ router = APIRouter()
 
 @router.get('/', response_model=list[ProjectDB])
 async def get_all_projects(session: AsyncSession = Depends(get_async_session)):
-    projects = await project_crud.get_multi(session=session)
-    return projects
+    return await project_crud.get_multi(session=session)
 
 
 @router.post(
@@ -40,7 +37,7 @@ async def create_new_project(
 async def delete_project(
     project_id: int, session: AsyncSession = Depends(get_async_session)
 ):
-    project = await chek_project_befor_edit(project_id, session)
+    project = await get_project_or_404(project_id, session)
     await chek_project_invested_amount(project, session)
     project_del = await project_crud.remove(db_obj=project, session=session)
     return project_del
@@ -56,7 +53,7 @@ async def update_project(
     obj_in: ProjectUpdate,
     session: AsyncSession = Depends(get_async_session),
 ):
-    project_obj_db = await chek_project_befor_edit(project_id, session)
+    project_obj_db = await get_project_or_404(project_id, session)
     await check_name_duplicate(obj_in.name, session)
     full_amount_update = obj_in.full_amount
     if full_amount_update is not None:

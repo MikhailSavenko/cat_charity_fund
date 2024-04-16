@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Text, String
+from sqlalchemy import Column, String, Text
+
 from .base_attr import BaseAttr
 
 

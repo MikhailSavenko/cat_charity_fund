@@ -1,7 +1,9 @@
-from app.models import Donation, CharityProject
-from sqlalchemy import select, desc
-from app.core.db import AsyncSession
 from datetime import datetime
+
+from sqlalchemy import desc, select
+
+from app.core.db import AsyncSession
+from app.models import CharityProject, Donation
 
 
 def change_value_attr(obj_in, investing_sum):

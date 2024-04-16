@@ -1,8 +1,9 @@
-from app.models import User, Donation
-from .base import CRUDBase
-from app.models import Donation
-from app.core.db import AsyncSession
 from sqlalchemy import select
+
+from app.core.db import AsyncSession
+from app.models import Donation, User
+
+from .base import CRUDBase
 
 
 class CRUDDonation(CRUDBase):

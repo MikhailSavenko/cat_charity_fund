@@ -1,11 +1,12 @@
-from pydantic import BaseModel, Field, Extra
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, Extra, Field
 
 
 class ProjectBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    description: str = Field(..., min_length=1)
+    description: str = Field(min_length=1)
     full_amount: int = Field(gt=0)
 
     class Config:
